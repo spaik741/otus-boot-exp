@@ -1,0 +1,9 @@
+#pathFile:
+#  "questions.csv"
+#spring.messages.basename=i18n/messages
+#locale=ru
+spring:
+  messages:
+    basename: i18n/messages
+locale:
+  "ru"
