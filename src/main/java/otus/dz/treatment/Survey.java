@@ -16,10 +16,10 @@ import org.supercsv.prefs.CsvPreference;
 import otus.dz.entity.Quest;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 @Slf4j
@@ -43,7 +43,7 @@ public class Survey {
         }
         List<Quest> questList = new ArrayList<>();
         try {
-            FileReader file = new FileReader(getClass().getClassLoader().getResource(pathToFile).getFile());
+            FileReader file = new FileReader(Objects.requireNonNull(getClass().getClassLoader().getResource(pathToFile)).getFile());
             ICsvBeanReader csvBeanReader = new CsvBeanReader(file, CsvPreference.STANDARD_PREFERENCE);
             String[] mapping = new String[]{"id", "quest", "varAnswers", "correctAnswer"};
             CellProcessor[] procs = getProcessors();
@@ -52,7 +52,7 @@ public class Survey {
                 questList.add(quest);
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.info("Ошибка парсинга файла {}", pathToFile);
             e.printStackTrace();
         }

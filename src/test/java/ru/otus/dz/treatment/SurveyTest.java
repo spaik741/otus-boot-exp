@@ -2,6 +2,7 @@ package ru.otus.dz.treatment;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.context.MessageSource;
 import otus.dz.entity.Quest;
 import otus.dz.treatment.Survey;
@@ -9,6 +10,7 @@ import otus.dz.treatment.Survey;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 
 class SurveyTest {
 
@@ -17,11 +19,13 @@ class SurveyTest {
 
     @BeforeEach
     public void init() {
+        messageSource = Mockito.mock(MessageSource.class);
         survey = new Survey("", messageSource);
     }
 
     @Test
     public void cleanTest() {
+        Mockito.when(messageSource.getMessage(any(), any())).thenReturn("");
         List<Quest> questList = survey.getQuestions();
         assertNotNull(questList);
     }
