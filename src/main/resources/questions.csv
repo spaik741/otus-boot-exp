@@ -1,6 +1,0 @@
-1, What is your name? , ,
-2, Choose an option. Comparison operators <> <=> = are applicable for:,1) numbers;2) strings;3) objects,1
-3, Enter the answer: Which will type the following code int i = 0; System.out.print (++ i); System.out.print (i ++); System.out.print (i); , ,112
-4, Choose an option. Is it possible to compile an empty file, 1) yes; 2) no,1
-5, Choose an option. What IoC feature does Spring use? 1) Service Locator; 2) Dependency Injection; 3) Factory Pattern,2
-6, Introduce answer: What annotation allows you to tell the compiler that a class is an entity in the DB? , ,@Entity
