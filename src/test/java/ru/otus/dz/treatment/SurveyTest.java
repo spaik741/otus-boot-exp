@@ -7,9 +7,11 @@ import org.springframework.context.MessageSource;
 import otus.dz.entity.Quest;
 import otus.dz.treatment.Survey;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 class SurveyTest {
@@ -26,8 +28,9 @@ class SurveyTest {
     @Test
     public void cleanTest() {
         Mockito.when(messageSource.getMessage(any(), any())).thenReturn("");
-        List<Quest> questList = survey.getQuestions();
-        assertNotNull(questList);
+        assertThrows(Exception.class, () -> {
+            survey.getQuestions();
+        });
     }
 
 }

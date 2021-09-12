@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import otus.dz.entity.Quest;
 import otus.dz.treatment.Survey;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +19,16 @@ public class QuestDAOImpl implements QuestDAO {
 
     @Override
     public List<Quest> getAllQuests() {
-        return survey.getQuestions();
+        try {
+            return survey.getQuestions();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public Optional<Quest> getQuest(String id) {
-        return survey.getQuestions().stream().filter(s -> s.getId().equals(id)).findFirst();
+        return getAllQuests().stream().filter(s -> s.getId().equals(id)).findFirst();
     }
 }

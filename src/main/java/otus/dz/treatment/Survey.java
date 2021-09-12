@@ -1,8 +1,7 @@
 package otus.dz.treatment;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -15,14 +14,15 @@ import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import otus.dz.entity.Quest;
 
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 
 @Slf4j
+@Data
 @Component
 public class Survey {
 
@@ -34,31 +34,19 @@ public class Survey {
         this.lang = lang;
     }
 
-    public List<Quest> getQuestions() {
-        String pathToFile;
-        if (StringUtils.contains(lang, "ru")) {
-            pathToFile = messageSource.getMessage("pathFile", new String[]{}, Locale.forLanguageTag("ru-RU"));
-        } else {
-            pathToFile = messageSource.getMessage("pathFile", new String[]{}, Locale.forLanguageTag(""));
-        }
+    public List<Quest> getQuestions() throws Exception {
+        String pathToFile = messageSource.getMessage("pathFile", new String[]{}, Locale.forLanguageTag(lang));
         List<Quest> questList = new ArrayList<>();
-        try {
-            FileReader file = new FileReader(getClass().getClassLoader().getResource(pathToFile).getFile());
-            ICsvBeanReader csvBeanReader = new CsvBeanReader(file, CsvPreference.STANDARD_PREFERENCE);
-            String[] mapping = new String[]{"id", "quest", "varAnswers", "correctAnswer"};
-            CellProcessor[] procs = getProcessors();
-            Quest quest;
-            while ((quest = csvBeanReader.read(Quest.class, mapping, procs)) != null) {
-                questList.add(quest);
-            }
-
-        } catch (Exception e) {
-            log.info("Ошибка парсинга файла {}", pathToFile);
-            e.printStackTrace();
+        InputStreamReader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(pathToFile), StandardCharsets.UTF_8);
+        ICsvBeanReader csvBeanReader = new CsvBeanReader(reader, CsvPreference.STANDARD_PREFERENCE);
+        String[] mapping = new String[]{"id", "quest", "varAnswers", "correctAnswer"};
+        CellProcessor[] procs = getProcessors();
+        Quest quest;
+        while ((quest = csvBeanReader.read(Quest.class, mapping, procs)) != null) {
+            questList.add(quest);
         }
-        if (CollectionUtils.isEmpty(questList)) {
-            log.info("Список вопросов пуст.");
-        }
+        csvBeanReader.close();
+        reader.close();
         return questList;
     }
 

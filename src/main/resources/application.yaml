@@ -6,4 +6,6 @@ spring:
   messages:
     basename: i18n/messages
 locale:
-  "ru"
+  ""
+#locale:
+#  "ru-RU"
