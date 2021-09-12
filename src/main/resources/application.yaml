@@ -4,7 +4,7 @@
 #locale=ru
 spring:
   messages:
-    basename: i18n/messages
+    basename: i18n/testing
 locale:
   ""
 #locale:
