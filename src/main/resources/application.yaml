@@ -1,11 +1,10 @@
-#pathFile:
-#  "questions.csv"
-#spring.messages.basename=i18n/messages
-#locale=ru
 spring:
   messages:
     basename: i18n/testing
-locale:
-  ""
+quiz:
+  pathFile:
+    questions_%s.csv
+  locale:
+    "en"
 #locale:
 #  "ru-RU"

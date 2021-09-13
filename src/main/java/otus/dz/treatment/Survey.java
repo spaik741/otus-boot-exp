@@ -1,9 +1,7 @@
 package otus.dz.treatment;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.constraint.NotNull;
@@ -18,35 +16,42 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 @Slf4j
-@Data
 @Component
 public class Survey {
 
-    private final MessageSource messageSource;
     private final String lang;
+    private final String pathFile;
 
-    public Survey(@Value("${locale}") String lang, MessageSource messageSource) {
-        this.messageSource = messageSource;
+    public Survey(@Value("${quiz.locale}") String lang, @Value("${quiz.pathFile}") String pathFile) {
         this.lang = lang;
+        this.pathFile = pathFile;
     }
 
     public List<Quest> getQuestions() throws Exception {
-        String pathToFile = messageSource.getMessage("pathFile", new String[]{}, Locale.forLanguageTag(lang));
+        String nameFile = String.format(pathFile, lang);
         List<Quest> questList = new ArrayList<>();
-        InputStreamReader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(pathToFile), StandardCharsets.UTF_8);
-        ICsvBeanReader csvBeanReader = new CsvBeanReader(reader, CsvPreference.STANDARD_PREFERENCE);
-        String[] mapping = new String[]{"id", "quest", "varAnswers", "correctAnswer"};
-        CellProcessor[] procs = getProcessors();
-        Quest quest;
-        while ((quest = csvBeanReader.read(Quest.class, mapping, procs)) != null) {
-            questList.add(quest);
+        InputStreamReader reader = null;
+        ICsvBeanReader csvBeanReader = null;
+        try {
+            reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(nameFile), StandardCharsets.UTF_8);
+            csvBeanReader = new CsvBeanReader(reader, CsvPreference.STANDARD_PREFERENCE);
+            String[] mapping = new String[]{"id", "quest", "varAnswers", "correctAnswer"};
+            CellProcessor[] procs = getProcessors();
+            Quest quest;
+            while ((quest = csvBeanReader.read(Quest.class, mapping, procs)) != null) {
+                questList.add(quest);
+            }
+        } finally {
+            if (csvBeanReader != null) {
+                csvBeanReader.close();
+            }
+            if (reader != null) {
+                reader.close();
+            }
         }
-        csvBeanReader.close();
-        reader.close();
         return questList;
     }
 
