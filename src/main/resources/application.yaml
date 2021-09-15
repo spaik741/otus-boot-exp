@@ -1,0 +1,10 @@
+spring:
+  messages:
+    basename: i18n/testing
+quiz:
+  pathFile:
+    questions_%s.csv
+  locale:
+    "en"
+#locale:
+#  "ru-RU"
