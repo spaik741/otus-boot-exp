@@ -1,8 +1,5 @@
 package otus.dz.io;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;

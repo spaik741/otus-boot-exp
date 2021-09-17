@@ -1,7 +1,6 @@
 package otus.dz.treatment;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.constraint.NotNull;
@@ -11,6 +10,7 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 import otus.dz.entity.Quest;
+import otus.dz.properties.AppProperties;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -22,34 +22,22 @@ import java.util.List;
 @Component
 public class Survey {
 
-    private final String lang;
-    private final String pathFile;
+    private final AppProperties properties;
 
-    public Survey(@Value("${quiz.locale}") String lang, @Value("${quiz.pathFile}") String pathFile) {
-        this.lang = lang;
-        this.pathFile = pathFile;
+    public Survey(AppProperties properties) {
+        this.properties = properties;
     }
 
     public List<Quest> getQuestions() throws Exception {
-        String nameFile = String.format(pathFile, lang);
+        String nameFile = properties.getNameFile();
         List<Quest> questList = new ArrayList<>();
-        InputStreamReader reader = null;
-        ICsvBeanReader csvBeanReader = null;
-        try {
-            reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(nameFile), StandardCharsets.UTF_8);
-            csvBeanReader = new CsvBeanReader(reader, CsvPreference.STANDARD_PREFERENCE);
+        try (InputStreamReader reader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream(nameFile), StandardCharsets.UTF_8);
+             ICsvBeanReader csvBeanReader = new CsvBeanReader(reader, CsvPreference.STANDARD_PREFERENCE)){
             String[] mapping = new String[]{"id", "quest", "varAnswers", "correctAnswer"};
             CellProcessor[] procs = getProcessors();
             Quest quest;
             while ((quest = csvBeanReader.read(Quest.class, mapping, procs)) != null) {
                 questList.add(quest);
-            }
-        } finally {
-            if (csvBeanReader != null) {
-                csvBeanReader.close();
-            }
-            if (reader != null) {
-                reader.close();
             }
         }
         return questList;
