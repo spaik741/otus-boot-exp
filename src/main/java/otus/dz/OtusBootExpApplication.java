@@ -11,9 +11,7 @@ import java.util.List;
 public class OtusBootExpApplication {
 
     public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(OtusBootExpApplication.class, args);
-        QuestionsTestService testService = context.getBean(QuestionsTestService.class);
-        testService.runTest();
+        SpringApplication.run(OtusBootExpApplication.class, args);
     }
 
 }
